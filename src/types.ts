@@ -1,11 +1,4 @@
-export type NavSection = 
-  | 'currency-trends'
-  | 'indices'
-  | 'stocks'
-  | 'crypto'
-  | 'forex'
-  | 'futures'
-  | 'bonds';
+export type NavSection = 'currency-trends';
 
 export type RegionFilter = 
   | 'WORLD'
@@ -48,21 +41,6 @@ export interface DestinationCurrency {
   historicalData: HistoricalRatePoint[];
   costs: TravelCostEstimate;
   recommendedSeason: string;
-}
-
-export interface MarketAsset {
-  id: string;
-  symbol: string;
-  name: string;
-  category: NavSection;
-  price: number;
-  changePercent: number;
-  changeAmount: number;
-  high24h: number;
-  low24h: number;
-  volume: string;
-  marketCap?: string;
-  historicalPoints: number[];
 }
 
 export interface HomeCurrency {

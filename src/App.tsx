@@ -9,7 +9,6 @@ import { HOME_CURRENCIES, DESTINATIONS_DATA } from './data/mockData';
 import { Sidebar } from './components/Sidebar';
 import { TopNav } from './components/TopNav';
 import { CurrencyTrendsView } from './components/CurrencyTrendsView';
-import { MarketViews } from './components/MarketViews';
 import { TripBudgetCalculatorModal } from './components/TripBudgetCalculatorModal';
 import { RateAlertModal } from './components/RateAlertModal';
 import { AccountModal } from './components/AccountModal';
@@ -67,20 +66,13 @@ export default function App() {
 
         {/* Page Content Body */}
         <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1600px] w-full mx-auto">
-          {currentSection === 'currency-trends' ? (
-            <CurrencyTrendsView
-              searchQuery={searchQuery}
-              onOpenCalculator={handleOpenCalculator}
-              onSetAlert={handleSetAlert}
-              homeCurrency={homeCurrency}
-              onSelectHomeCurrency={setHomeCurrency}
-            />
-          ) : (
-            <MarketViews
-              section={currentSection}
-              searchQuery={searchQuery}
-            />
-          )}
+          <CurrencyTrendsView
+            searchQuery={searchQuery}
+            onOpenCalculator={handleOpenCalculator}
+            onSetAlert={handleSetAlert}
+            homeCurrency={homeCurrency}
+            onSelectHomeCurrency={setHomeCurrency}
+          />
         </main>
 
         {/* Subtle Natural Footer */}

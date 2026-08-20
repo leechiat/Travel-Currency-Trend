@@ -1,13 +1,8 @@
 import React from 'react';
 import { NavSection } from '../types';
 import {
-  TrendingUp,
   BarChart3,
-  Coins,
-  RefreshCw,
   Plane,
-  Clock,
-  Landmark,
   User,
   Compass,
   ArrowUpRight,
@@ -29,13 +24,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
 }) => {
   const navItems: { id: NavSection; label: string; icon: React.FC<{ className?: string }> }[] = [
-    { id: 'indices', label: 'Indices', icon: BarChart3 },
-    { id: 'stocks', label: 'Stocks', icon: TrendingUp },
-    { id: 'crypto', label: 'Crypto', icon: Coins },
-    { id: 'forex', label: 'Forex', icon: RefreshCw },
     { id: 'currency-trends', label: 'Currency Trends', icon: Plane },
-    { id: 'futures', label: 'Futures', icon: Clock },
-    { id: 'bonds', label: 'Bonds', icon: Landmark },
   ];
 
   return (

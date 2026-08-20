@@ -3,6 +3,7 @@ import { DestinationCurrency, HomeCurrency, RegionFilter } from '../types';
 import { DESTINATIONS_DATA, HOME_CURRENCIES } from '../data/mockData';
 import { SpotlightDestinationCard } from './SpotlightDestinationCard';
 import { DestinationListItem } from './DestinationListItem';
+import { TalkToUsSection } from './TalkToUsSection';
 import { ChevronDown, SlidersHorizontal, Sparkles, Search, Bookmark, RotateCcw, Activity, RefreshCw } from 'lucide-react';
 import { fetchMasExchangeRates, MasRecord } from '../lib/masApi';
 
@@ -323,6 +324,9 @@ export const CurrencyTrendsView: React.FC<CurrencyTrendsViewProps> = ({
           )}
         </div>
       </div>
+
+      {/* Talk To Us / Discussion Forum Section */}
+      <TalkToUsSection />
     </div>
   );
 };
