@@ -1,0 +1,6 @@
+{
+  "name": "Markets",
+  "description": "Travel currency trends and global market analytics with interactive 90-day currency fluctuation tracking in a refined light theme.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
