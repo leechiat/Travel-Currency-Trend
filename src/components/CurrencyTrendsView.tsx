@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { DestinationCurrency, HomeCurrency, RegionFilter } from '../types';
 import { DESTINATIONS_DATA, HOME_CURRENCIES } from '../data/mockData';
 import { SpotlightDestinationCard } from './SpotlightDestinationCard';
 import { DestinationListItem } from './DestinationListItem';
-import { ChevronDown, SlidersHorizontal, Sparkles, Search, Bookmark, RotateCcw } from 'lucide-react';
+import { ChevronDown, SlidersHorizontal, Sparkles, Search, Bookmark, RotateCcw, Activity, RefreshCw } from 'lucide-react';
+import { fetchMasExchangeRates, MasRecord } from '../lib/masApi';
 
 interface CurrencyTrendsViewProps {
   searchQuery: string;
@@ -25,6 +26,28 @@ export const CurrencyTrendsView: React.FC<CurrencyTrendsViewProps> = ({
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set(['japan', 'argentina']));
   const [showOnlyBookmarked, setShowOnlyBookmarked] = useState(false);
   const [sortBy, setSortBy] = useState<'savings' | 'alpha' | 'rate'>('savings');
+  const [masLatestRecord, setMasLatestRecord] = useState<MasRecord | null>(null);
+  const [isMasLoading, setIsMasLoading] = useState<boolean>(false);
+  const [masSyncTime, setMasSyncTime] = useState<string>('');
+
+  const loadMasRates = async () => {
+    setIsMasLoading(true);
+    try {
+      const response = await fetchMasExchangeRates(5);
+      if (response && response.data?.result?.records && response.data.result.records.length > 0) {
+        setMasLatestRecord(response.data.result.records[0]);
+        setMasSyncTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      }
+    } catch (e) {
+      console.error('Failed to load MAS rates:', e);
+    } finally {
+      setIsMasLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadMasRates();
+  }, []);
 
   const regions: RegionFilter[] = [
     'WORLD',
@@ -132,6 +155,51 @@ export const CurrencyTrendsView: React.FC<CurrencyTrendsViewProps> = ({
               </select>
               <ChevronDown className="w-4 h-4 text-[#7A756D] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
+          </div>
+        </div>
+
+        {/* MAS Live End-of-Period Exchange Rates Feed Status Strip */}
+        <div className="mt-6 pt-5 border-t border-[#E5E2DA] flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E5E2DA] shadow-2xs">
+              <span className="h-2 w-2 rounded-full bg-[#84967F] animate-pulse" />
+              <span className="font-semibold text-[#2D332D]">MAS Exchange Rates Feed</span>
+            </div>
+            <span className="text-[#7A756D]">
+              Source: Monetary Authority of Singapore (MSB Daily EOP)
+            </span>
+            {masLatestRecord?.end_of_day && (
+              <span className="bg-[#84967F]/15 text-[#84967F] px-2.5 py-0.5 rounded-full font-medium">
+                Period: {masLatestRecord.end_of_day}
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2.5 self-end md:self-auto">
+            {masLatestRecord && (
+              <div className="hidden sm:flex items-center gap-3 text-[11px] text-[#5C5852] font-mono bg-white/70 px-3 py-1 rounded-full border border-[#E5E2DA]">
+                {masLatestRecord.usd_sgd_eop && (
+                  <span>USD/SGD: <strong className="text-[#2D332D]">{Number(masLatestRecord.usd_sgd_eop).toFixed(4)}</strong></span>
+                )}
+                {masLatestRecord.eur_sgd_eop && (
+                  <span>EUR/SGD: <strong className="text-[#2D332D]">{Number(masLatestRecord.eur_sgd_eop).toFixed(4)}</strong></span>
+                )}
+                {masLatestRecord.gbp_sgd_eop && (
+                  <span>GBP/SGD: <strong className="text-[#2D332D]">{Number(masLatestRecord.gbp_sgd_eop).toFixed(4)}</strong></span>
+                )}
+                {masLatestRecord.jpy_sgd_100_eop && (
+                  <span>100 JPY/SGD: <strong className="text-[#2D332D]">{Number(masLatestRecord.jpy_sgd_100_eop).toFixed(4)}</strong></span>
+                )}
+              </div>
+            )}
+            <button
+              onClick={loadMasRates}
+              disabled={isMasLoading}
+              title="Refresh MAS Rates"
+              className="p-1.5 rounded-full bg-white hover:bg-[#E5E2DA]/60 border border-[#E5E2DA] text-[#7A756D] hover:text-[#2D332D] transition-colors disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isMasLoading ? 'animate-spin' : ''}`} />
+            </button>
           </div>
         </div>
       </div>

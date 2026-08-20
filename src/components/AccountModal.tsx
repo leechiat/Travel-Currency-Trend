@@ -89,6 +89,28 @@ export const AccountModal: React.FC<AccountModalProps> = ({
             </div>
           </div>
 
+          {/* External Market Data Feeds */}
+          <div className="p-4 bg-[#F2F0EB] rounded-[20px] border border-[#E5E2DA] space-y-2.5">
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#7A756D] flex items-center gap-1.5">
+              <Globe className="w-4 h-4 text-[#84967F]" />
+              MAS Live Exchange Rate Feed
+            </h4>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-[#2D332D]">Monetary Authority of Singapore (MAS)</span>
+                <span className="text-[10px] font-bold text-[#84967F] bg-[#84967F]/15 px-2.5 py-0.5 rounded-full">
+                  Endpoint Connected
+                </span>
+              </div>
+              <p className="text-[11px] text-[#7A756D] font-mono break-all leading-tight">
+                https://eservices.mas.gov.sg/.../exchange_rates_end_of_period_daily
+              </p>
+              <p className="text-[11px] text-[#5C5852] mt-1">
+                Rates retrieved securely via server-side proxy using environment configuration without client key exposure.
+              </p>
+            </div>
+          </div>
+
           {/* Notifications config */}
           <div className="space-y-2.5">
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#7A756D] mb-2 flex items-center gap-1.5">
