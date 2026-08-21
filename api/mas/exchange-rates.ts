@@ -1,11 +1,17 @@
-import { getMasKeyId, MAS_EXCHANGE_RATES_ENDPOINT } from '../_shared';
+const MAS_EXCHANGE_RATES_ENDPOINT =
+  'https://eservices.mas.gov.sg/apimg-gw/server/monthly_statistical_bulletin_non610ora/exchange_rates_end_of_period_daily/views/exchange_rates_end_of_period_daily';
 
 export default async function handler(req: any, res: any) {
   try {
-    const apiKey = getMasKeyId();
+    const apiKey =
+      process.env.MAS_KEY_ID ||
+      process.env.MAS_API_KEY ||
+      process.env.KEY_ID ||
+      '';
+
     const url = new URL(MAS_EXCHANGE_RATES_ENDPOINT);
 
-    // Forward any query parameters (e.g., limit, rows, between dates)
+    // Forward query parameters (e.g., rows, limit)
     if (req.query) {
       Object.entries(req.query).forEach(([key, val]) => {
         if (typeof val === 'string') {
@@ -16,7 +22,6 @@ export default async function handler(req: any, res: any) {
       });
     }
 
-    // Default to limit=30 if not provided
     if (!url.searchParams.has('limit')) {
       url.searchParams.append('limit', '30');
     }
@@ -26,7 +31,6 @@ export default async function handler(req: any, res: any) {
       'User-Agent': 'Markets-Intelligence/1.0',
     };
 
-    // Attach API key securely if present
     if (apiKey && apiKey.trim()) {
       headers['apikey'] = apiKey.trim();
       headers['api_key'] = apiKey.trim();
@@ -45,28 +49,19 @@ export default async function handler(req: any, res: any) {
         status: response.status,
         message: `MAS API returned HTTP ${response.status}`,
         error: errorText,
-        source: 'mas_api',
-        endpoint: MAS_EXCHANGE_RATES_ENDPOINT,
-        hasApiKey: Boolean(apiKey),
       });
     }
 
     const data = await response.json();
     return res.status(200).json({
       success: true,
-      source: 'mas_api',
-      endpoint: MAS_EXCHANGE_RATES_ENDPOINT,
-      hasApiKey: Boolean(apiKey),
       data,
     });
   } catch (error: any) {
-    console.error('Error fetching MAS exchange rates:', error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to communicate with MAS exchange rates service',
+      message: 'Failed to fetch MAS exchange rates',
       error: error?.message || 'Unknown network error',
-      source: 'mas_api',
-      endpoint: MAS_EXCHANGE_RATES_ENDPOINT,
     });
   }
 }
