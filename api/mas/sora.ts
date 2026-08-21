@@ -1,11 +1,10 @@
 import {
   MAS_SORA_ENDPOINT,
   getMasKeyId,
-  VercelLikeRequest,
-  VercelLikeResponse,
+  getMasHeaders,
 } from '../_shared';
 
-export default async function handler(req: VercelLikeRequest, res: VercelLikeResponse) {
+export default async function handler(req: any, res: any) {
   if (req.method && req.method !== 'GET') {
     return res.status(405).json({
       success: false,
@@ -13,7 +12,8 @@ export default async function handler(req: VercelLikeRequest, res: VercelLikeRes
     });
   }
 
-  const { apiKey, headers } = getMasKeyId();
+  const keyId = getMasKeyId();
+  const headers = getMasHeaders();
 
   try {
     const url = new URL(MAS_SORA_ENDPOINT);
@@ -47,7 +47,7 @@ export default async function handler(req: VercelLikeRequest, res: VercelLikeRes
         error: errorText,
         source: 'mas_sora_api',
         endpoint: MAS_SORA_ENDPOINT,
-        hasApiKey: Boolean(apiKey),
+        hasApiKey: Boolean(keyId),
       });
     }
 
@@ -57,7 +57,7 @@ export default async function handler(req: VercelLikeRequest, res: VercelLikeRes
       success: true,
       source: 'mas_sora_api',
       endpoint: MAS_SORA_ENDPOINT,
-      hasApiKey: Boolean(apiKey),
+      hasApiKey: Boolean(keyId),
       data,
     });
   } catch (error: any) {
